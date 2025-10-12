@@ -34,10 +34,8 @@ const char * cgi_cmd_handler(int iIndex, int iNumParams, char *pcParam[], char *
         motors.panBy(rev);
     }
     if (strcmp(pcParam[0] , "pen") == 0){
-        if(strcmp(pcValue[0], "up") == 0)
-                    serv.moveTo(PEN_UP);
-        else if(strcmp(pcValue[0], "down") == 0)
-                    serv.moveTo(PEN_DOWN);
+        int deg = atoi(pcValue[0]);
+        serv.moveTo(deg);
     }
     
     // Send the index page back to the user

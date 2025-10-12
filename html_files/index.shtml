@@ -10,8 +10,8 @@
         <h2>Commands</h2>
         <a href="/cmd.cgi?move=1.0"><button>MOVE 1.0</button></a>
         <a href="/cmd.cgi?turn=1.0"><button>TURN 1.0</button></a>
-        <a href="/cmd.cgi?pen=up"><button>PEN up</button></a>
-        <a href="/cmd.cgi?pen=down"><button>PEN down</button></a>
+        <a href="/cmd.cgi?pen=-45"><button>PEN up</button></a>
+        <a href="/cmd.cgi?pen=45"><button>PEN down</button></a>
         <br>
         <a href="/index.shtml">Refresh</a>
    </body>
