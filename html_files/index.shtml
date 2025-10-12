@@ -6,6 +6,7 @@
     <body>
         <h1>PicoW Turtle</h1>
         <p>Status: <!--#status--></p>
+        <p>Connected to <!--#ssid--></p>
         <br>
         <h2>Commands</h2>
         <a href="/cmd.cgi?move=1.0"><button>MOVE 1.0</button></a>

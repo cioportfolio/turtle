@@ -35,15 +35,20 @@ project(turtle C CXX ASM)
 pico_sdk_init()
 
 message("Running makefsdata python script")
-execute_process(COMMAND
-    py makefsdata.py
-    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-)
+pico_add_library(pico_httpd_content NOFLAG)
+pico_set_lwip_httpd_content(pico_httpd_content INTERFACE
+    ${CMAKE_CURRENT_LIST_DIR}/html_files/index.shtml)
+#execute_process(COMMAND
+#    py makefsdata.py
+#    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+#)
 
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(${PROGRAM_NAME}
     turtle.cpp
+    dhcpserver/dhcpserver.cpp
+    dnsserver/dnsserver.cpp
 )
 
 pico_set_program_name(${PROGRAM_NAME} "turtle")
@@ -65,6 +70,8 @@ target_link_libraries(${PROGRAM_NAME}
 # Add the standard include files to the build
 target_include_directories(${PROGRAM_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/dhcpserver
+        ${CMAKE_CURRENT_LIST_DIR}/dnsserver
 )
 
 # Add any user requested libraries
@@ -72,8 +79,14 @@ target_link_libraries(${PROGRAM_NAME}
         hardware_pio
         hardware_pwm
         pico_cyw43_arch_lwip_threadsafe_background
-        pico_lwip_http  
+        pico_lwip_http
+        pico_httpd_content
     )
+
+# You can change the address below to change the address of the access point
+pico_configure_ip4_address(${PROGRAM_NAME} PRIVATE
+        CYW43_DEFAULT_IP_AP_ADDRESS 192.168.4.1
+        )
 
 pico_add_extra_outputs(${PROGRAM_NAME})
 
