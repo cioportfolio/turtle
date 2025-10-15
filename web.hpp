@@ -4,11 +4,13 @@
 
 #include "dhcpserver.h"
 #include "dnsserver.h"
-#include "lwipopts.h"
+#include "flash_utils.hpp"
 #include "lwip/apps/httpd.h"
+#include "lwip/pbuf.h"
+#include "lwip/udp.h"
+#include "lwipopts.h"
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
-#include "flash_utils.hpp"
 
 // WIFI Credentials - take care if pushing to github!
 #include "secrets.hpp"
@@ -16,8 +18,14 @@
 const char *apssid = WIFI_SSID;
 const char *appassword = WIFI_PASSWORD;
 
-char ssid[33]={'\0'};
-char pwd[33]={'\0'};
+char ssid[33] = {'\0'};
+char pwd[33] = {'\0'};
+
+bool beacon = false;
+#define UDP_PORT 4444
+#define BEACON_MSG_LEN_MAX 127
+#define BEACON_TARGET "255.255.255.255"
+#define BEACON_INTERVAL_MS 5000
 
 dhcp_server_t dhcp_server;
 dns_server_t dns_server;
@@ -27,10 +35,10 @@ int sta_init() {
     cyw43_arch_enable_sta_mode();
     // Connect to the WiFI network
 
-    int ret=-1;
-    for (int i=0; i<WIFI_RETRY && ret!=0; i++) {
+    int ret = -1;
+    for (int i = 0; i < WIFI_RETRY && ret != 0; i++) {
         printf("Trying to connect to %s...\n", ssid);
-        ret=cyw43_arch_wifi_connect_timeout_ms(ssid, pwd, CYW43_AUTH_WPA2_AES_PSK, 30000);
+        ret = cyw43_arch_wifi_connect_timeout_ms(ssid, pwd, CYW43_AUTH_WPA2_AES_PSK, 30000);
     }
     return ret;
 }
@@ -65,20 +73,20 @@ void ap_init() {
 }
 
 void readSavedWifi() {
-    char buffer[66]="";
+    char buffer[66] = "";
     readPersistent(buffer, 66);
-                buffer[32]='\0';
-                    buffer[65]='\0';
+    buffer[32] = '\0';
+    buffer[65] = '\0';
     strncpy(ssid, buffer, 32);
-    strncpy(pwd, &(buffer[33]),32);
+    strncpy(pwd, &(buffer[33]), 32);
 }
 
 void saveWifi() {
-    char buffer[66]="";
-    strncpy(buffer, ssid,32);
-    buffer[32]='\0';
-    strncpy(&(buffer[33]), pwd,32);
-    buffer[65]='\0';
+    char buffer[66] = "";
+    strncpy(buffer, ssid, 32);
+    buffer[32] = '\0';
+    strncpy(&(buffer[33]), pwd, 32);
+    buffer[65] = '\0';
     writePersistent(buffer, 66);
 }
 
@@ -88,10 +96,33 @@ void web_init() {
     cyw43_arch_init();
 
     readSavedWifi();
-    if (sta_init()!=0) {
+    if (sta_init() == 0) {
+        beacon = true;
+    } else {
+        beacon = false;
         ap_init();
-        ssid[0]='\0';
+        ssid[0] = '\0';
     }
     server_init();
+}
+
+void beaconIfRequired() {
+    if (beacon) {
+        struct udp_pcb *pcb = udp_new();
+
+        ip_addr_t addr;
+        ipaddr_aton(BEACON_TARGET, &addr);
+
+        struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, BEACON_MSG_LEN_MAX + 1, PBUF_RAM);
+        char *req = (char *)p->payload;
+        memset(req, 0, BEACON_MSG_LEN_MAX + 1);
+        snprintf(req, BEACON_MSG_LEN_MAX, "Turtle at: %s\n", ip4addr_ntoa(netif_ip4_addr(netif_list)));
+        err_t er = udp_sendto(pcb, p, &addr, UDP_PORT);
+        pbuf_free(p);
+        if (er != ERR_OK) {
+            printf("Failed to send UDP packet! error=%d", er);
+        }
+        sleep_ms(BEACON_INTERVAL_MS);
+    }
 }
 #endif

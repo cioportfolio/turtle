@@ -17,5 +17,7 @@ int main() {
     cgi_init();
     printf("CGI Handler initialised\n");
 
-    while (1);
+    while (1) {
+        beaconIfRequired();
+    };
 }

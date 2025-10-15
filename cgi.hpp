@@ -34,7 +34,7 @@ const char *cgi_cmd_handler(int iIndex, int iNumParams, char *pcParam[], char *p
         int deg = atoi(pcValue[0]);
         serv.moveTo(deg);
     }
-
+    beacon=false;
     // Send the index page back to the user
     return "/index.shtml";
 }
