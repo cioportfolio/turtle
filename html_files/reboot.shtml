@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <title>PicoW Turtle</title> 
+    </head>
+    <body>
+        <h1>PicoW Turtle</h1>
+        <p><b>Status: Rebooting to connect to <!--#ssid--></b></p>
+        <br>
+        <a href="/index.shtml">Refresh Page</a>
+    </body>
+</html>

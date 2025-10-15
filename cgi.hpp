@@ -11,10 +11,7 @@
 
 #include <string>
 
-#include "hardware/timer.h"
-#include "lwip/apps/httpd.h"
 #include "motor.hpp"
-#include "pico/cyw43_arch.h"
 #include "servo.hpp"
 #include "web.hpp"
 
@@ -42,15 +39,35 @@ const char *cgi_cmd_handler(int iIndex, int iNumParams, char *pcParam[], char *p
     return "/index.shtml";
 }
 
+const char *cgi_wifi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
+    if (iNumParams==2) {
+        for(int i=0; i<2;i++) {
+            if (strcmp(pcParam[i],"ssid")==0) {
+                strncpy(ssid, pcValue[i],32);
+                ssid[32]='\0';
+            } else {
+                if (strcmp(pcParam[i],"pwd")==0) {
+                    strncpy(pwd, pcValue[i],32);
+                    pwd[32]='\0';
+                }
+            }
+        }
+        saveWifi();
+    }
+    // Send the index page back to the user
+    return "/reboot.shtml";
+}
+
 // tCGI Struct
 // Fill this with all of the CGI requests and their respective handlers
 static const tCGI cgi_handlers[] = {
     {// Html request for "/cmd.cgi" triggers cgi_cmd_handler
      "/cmd.cgi", cgi_cmd_handler},
+     {"/wifi.cgi", cgi_wifi_handler}
 };
 
 void cgi_init(void) {
     serv.init();
     motors.init();
-    http_set_cgi_handlers(cgi_handlers, 1);
+    http_set_cgi_handlers(cgi_handlers, 2);
 }

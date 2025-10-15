@@ -37,7 +37,8 @@ pico_sdk_init()
 message("Running makefsdata python script")
 pico_add_library(pico_httpd_content NOFLAG)
 pico_set_lwip_httpd_content(pico_httpd_content INTERFACE
-    ${CMAKE_CURRENT_LIST_DIR}/html_files/index.shtml)
+    ${CMAKE_CURRENT_LIST_DIR}/html_files/index.shtml
+    ${CMAKE_CURRENT_LIST_DIR}/html_files/reboot.shtml)
 #execute_process(COMMAND
 #    py makefsdata.py
 #    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
@@ -50,6 +51,9 @@ add_executable(${PROGRAM_NAME}
     dhcpserver/dhcpserver.cpp
     dnsserver/dnsserver.cpp
 )
+
+# From Jan Cumps at Element14 Community https://community.element14.com/products/raspberry-pi/b/blog/posts/raspberry-pico-c-sdk-reserve-a-flash-memory-block-for-persistent-storage 
+pico_set_linker_script(${PROGRAM_NAME} ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
 
 pico_set_program_name(${PROGRAM_NAME} "turtle")
 pico_set_program_version(${PROGRAM_NAME} "0.1")
@@ -81,6 +85,8 @@ target_link_libraries(${PROGRAM_NAME}
         pico_cyw43_arch_lwip_threadsafe_background
         pico_lwip_http
         pico_httpd_content
+        pico_flash
+        hardware_flash
     )
 
 # You can change the address below to change the address of the access point
