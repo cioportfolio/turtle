@@ -1,11 +1,12 @@
 # Turtle drawing
+
 ## Wifi Setup
 
-When it first starts the turtle will create a wifi access point (called 'Turtle'). If you connect to this and point a browser to '192.168.4.1'. A configuration screen will be displayed which will let you enter the name and pass key for your local wifi. After restarting the turtle will try to connect using the saved wifi details and will start to broadcast it's network address.
+When it first starts the turtle will create a wifi access point called 'Turtle'. Connect to this on a computer or phone and point a browser to '192.168.4.1'. A configuration screen will be displayed which will let you enter the name and pass key for your local wifi. After restarting the turtle will try to connect using the saved wifi details and will start to broadcast it's network address.
 
 If the turtle has previously connected to wifi somewhere else it will try those details first and, if it can't connect, it will create it's own wifi access point so that wifi details for its new location can be entered.
 
-You can use the Python code below to detect the turtle's wifi messages and not down it's network address. The address will be 4 numbers separated by stops e.g. 192.168.1.78. If you don't see any messages please check that your PC's security software lets through UDP Broadcast messages.
+You can use the Python code below to detect the turtle's wifi messages and note down it's network address. The address will be 4 numbers separated by stops e.g. 192.168.1.78. If you don't see any messages please check that your computer's security software lets through `UDP Broadcast` messages.
 
 ```python
 import socket
@@ -28,15 +29,16 @@ while True:
 
 ## Controlling the Turtle
 
-You can control the turtle by sending web message via wifi. You can do this with a web browser but it is more powerful to use code such as Python.
+You can control the turtle by sending web messages via wifi. You can do this with a web browser but it is more powerful to use code such as Python. There is more information about the Python code later.
 
-The format of the web messages looks like this. The parts between '<' and '>' need to be replaced with the appropriate details
+The format of the web messages looks like this.
 
 ```text
 http://<turtle network address>/cmd.cgi?<instruction>=<parameter>
 ```
 
-The valid instructions and parameters look like this:
+In place of `<turtle network address>` put the address you noted down earlier.
+Here is what you can use for the `<instruction>` and `<parameter>` parts:
 
 - `move=1.0` The turtle will move in a straight line and the parameter says how many times to rotate the wheels. The wheels can move partial turns (for example 0.37) and backwards (for example -2.5). Try some different positive and negative numbers to see what happens.
 - `turn=1.0` The turtle will rotate on the spot. The parameter says how many time the wheels rotate during the turn. Just like `move` you can do partical turns and go clockwise or anticlockwise.
@@ -86,7 +88,11 @@ print(u)
 Here are some hints.
 
 - It may help to use three variables. They can be for the turtle network address, the instruction and parameter
-- A template string with these will look a bit like `f'http://{ ... }/cmd.cgi?{ ... }={ ... }'`. You will have to work out what to put in place of `...`
+- A template string using these variables will look a bit like
+
+    `f'http://{ ... }/cmd.cgi?{ ... }={ ... }'`
+
+    You will have to work out what to put in place of `...`
 - It may help to define some functions to make it easier to use the turtle. Some examples might start with:
 
     ```python
@@ -97,7 +103,9 @@ Here are some hints.
     def penUp():
         ...
         ...
+
 - Can you practice to find out the amount to move the turtle to move precisely 10cm?
+
 - Can you practice to fine out the amount to turn the turtle to get it to face back to where it started (360 degrees)?
 - The turtle only understands turns of its wheels. For us it would be more useful to use `cm` for moves and `degrees` for turns. How can you use some mathematics in Python to convert our distances and angles into the right number of wheel rotations?
 - Can you work out how to draw a square or triangle with the turtle?
