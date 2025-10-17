@@ -44,7 +44,7 @@ Here is what you can use for the `<instruction>` and `<parameter>` parts:
 - `turn=1.0` The turtle will rotate on the spot. The parameter says how many time the wheels rotate during the turn. Just like `move` you can do partical turns and go clockwise or anticlockwise.
 - `pen=45` Sets the position of servo which raises or lowers the pen. The parameter depends upon how the pen has been put into the turtle. Usually a negative number will lift the pen off the paper and and number more than 45 will let the pen rest on the paper.
 
-## Contolling with Python
+## Working with Python
 
 Here are some hints about how to control the turtle with Python.
 
@@ -70,6 +70,8 @@ print(response.text)
 
 To control the turtle you will need to replace `https://bbc.co.uk` with the appropriate web message. Try it and see what happens. You can keep doing this by hand but you will be able to do more if you create the message with code.
 
+### Template strings
+
 In Python, template strings can let you make a web message with code.
 
 Try this example and see what happens. Make some changes and see if you can work out what is going on.
@@ -83,7 +85,7 @@ u = f'This messages includes parts from variables. {someVariable} {anotherVariab
 print(u)
 ```
 
-## Puting it all together
+### Puting it all together
 
 Here are some hints.
 
@@ -109,3 +111,17 @@ Here are some hints.
 - Can you practice to fine out the amount to turn the turtle to get it to face back to where it started (360 degrees)?
 - The turtle only understands turns of its wheels. For us it would be more useful to use `cm` for moves and `degrees` for turns. How can you use some mathematics in Python to convert our distances and angles into the right number of wheel rotations?
 - Can you work out how to draw a square or triangle with the turtle?
+
+### Imaginary turtles
+
+When you are trying to make something more complex you could easily waste a lot of paper and ink. You can use an imaginary turtle in Python to practice. Python has a module called `turtle` that replaces the physical turtle with an arrow on the screen. Try this code and experiment to see what you can make.
+
+```python
+from turtle import *
+
+size=100
+
+for side in range(4):
+  forward(size)
+  right(90)
+```
