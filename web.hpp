@@ -90,6 +90,9 @@ void saveWifi() {
     writePersistent(buffer, 66);
 }
 
+struct udp_pcb *pcb;
+ip_addr_t addr;
+
 void web_init() {
     stdio_init_all();
 
@@ -104,23 +107,29 @@ void web_init() {
         ssid[0] = '\0';
     }
     server_init();
+
+    pcb = udp_new();
+    if (pcb == NULL) {
+        printf("Failed to allocate pcb\n");
+    }
+
+    ipaddr_aton(BEACON_TARGET, &addr);
 }
 
 void beaconIfRequired() {
+
     if (beacon) {
-        struct udp_pcb *pcb = udp_new();
-
-        ip_addr_t addr;
-        ipaddr_aton(BEACON_TARGET, &addr);
-
         struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, BEACON_MSG_LEN_MAX + 1, PBUF_RAM);
+        if (p == NULL) {
+            printf("Failed to allocate pbuf\n");
+        }
         char *req = (char *)p->payload;
         memset(req, 0, BEACON_MSG_LEN_MAX + 1);
         snprintf(req, BEACON_MSG_LEN_MAX, "Turtle at: %s\n", ip4addr_ntoa(netif_ip4_addr(netif_list)));
         err_t er = udp_sendto(pcb, p, &addr, UDP_PORT);
         pbuf_free(p);
         if (er != ERR_OK) {
-            printf("Failed to send UDP packet! error=%d", er);
+            printf("Failed to send UDP packet! error=%d\n", er);
         }
         sleep_ms(BEACON_INTERVAL_MS);
     }
