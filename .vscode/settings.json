@@ -40,6 +40,7 @@
     "files.associations": {
         "chrono": "cpp",
         "functional": "cpp",
-        "fs.h": "c"
+        "fs.h": "c",
+        "string": "cpp"
     }
 }
