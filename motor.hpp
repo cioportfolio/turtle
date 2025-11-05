@@ -9,7 +9,7 @@
 #define STEP_THRESHOLD 10
 #define CRAWL_THRESHOLD (GEAR_RATIO*STEPS_PER_REV/4)
 #define FULL_POWER 255
-#define CRAWL_POWER 63 // approx 25%
+#define CRAWL_POWER 85 // approx 30%
 #define DEFAULT_PIO pio0
 #define DEFAULT_SM 0
 
