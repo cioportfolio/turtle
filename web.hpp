@@ -15,8 +15,12 @@
 // WIFI Credentials - take care if pushing to github!
 #include "secrets.hpp"
 #define WIFI_RETRY 2
+#define HOTSPOT_SSID "hotspot"
+#define HOTSPOT_PWD "hotspot123"
+
 const char *apssid = WIFI_SSID;
 const char *appassword = WIFI_PASSWORD;
+
 
 char ssid[33] = {'\0'};
 char pwd[33] = {'\0'};
@@ -98,13 +102,19 @@ void web_init() {
 
     cyw43_arch_init();
 
-    readSavedWifi();
+    strncpy(ssid, HOTSPOT_SSID, 32);
+    strncpy(pwd, HOTSPOT_PWD, 32);
     if (sta_init() == 0) {
         beacon = true;
     } else {
-        beacon = false;
-        ap_init();
-        ssid[0] = '\0';
+        readSavedWifi();
+        if (sta_init() == 0) {
+            beacon = true;
+        } else {
+            beacon = false;
+            ap_init();
+            ssid[0] = '\0';
+        }
     }
     server_init();
 
