@@ -14,7 +14,7 @@
 
 // WIFI Credentials - take care if pushing to github!
 #include "secrets.hpp"
-#define WIFI_RETRY 5
+#define WIFI_RETRY 2
 const char *apssid = WIFI_SSID;
 const char *appassword = WIFI_PASSWORD;
 
