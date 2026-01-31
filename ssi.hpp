@@ -19,7 +19,7 @@ u16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen, u16_t cPart, u16_t
         switch (cPart) {
           case 0:
                   printed = snprintf(pcInsert, iInsertLen,"<p>Connected via %s</p>\
-          <form method=\"GET\" action=\"/wifi.cgi\">", ssid[0]=='\0'?"Turtle Access Point":ssid);
+          <form method=\"GET\" enctype=\"text/plain\" action=\"/wifi.cgi\">", ssid[0]=='\0'?"Turtle Access Point":ssid);
           *nPart=1;
           break;
           case 1:

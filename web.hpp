@@ -112,8 +112,8 @@ void web_init() {
             beacon = true;
         } else {
             beacon = false;
-            ap_init();
             ssid[0] = '\0';
+            ap_init();
         }
     }
     server_init();
